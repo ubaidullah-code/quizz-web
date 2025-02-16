@@ -2,11 +2,13 @@ import { Button, TextField } from '@mui/material';
 import React, { useState } from 'react';
 import "./Main.css";
 import { addDoc, collection, getFirestore } from 'firebase/firestore';
+import { useNavigate } from 'react-router-dom'; // Add this import
 
 const AddQuestionPage = () => {
     const [question, setQuestion] = useState("");
     const [optionCheck, setOptionCheck] = useState(["", "", "", ""]);
     const [answerCHeck, setAnswerCHeck] = useState("");
+    const navigate = useNavigate(); // Initialize useNavigate hook
 
     const db = getFirestore();
 
@@ -19,6 +21,8 @@ const AddQuestionPage = () => {
                 answer: answerCHeck
             });
             console.log("Document written with ID: ", docRef.id);
+            // You can now use navigate here
+            // For example: navigate('/questions');
         } catch (e) {
             console.error("Error adding document: ", e);
         }

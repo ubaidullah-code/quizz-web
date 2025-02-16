@@ -1,8 +1,11 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button, TextField } from '@mui/material';
 import { initializeApp } from "firebase/app";
 import { addDoc, collection, getFirestore } from "firebase/firestore";
+import { useNavigate } from 'react-router';
+import { GlobalContext } from '../Context/Context';
+
 
 const UserLogin = () => {
     const[userName ,setuserName]=useState("")
@@ -13,8 +16,9 @@ const UserLogin = () => {
       const[gmailCheck ,setGmailCheck]=useState("")
       const[trainerName ,setTrainerName]=useState("")
       const[timingCheck ,setTimingCheck]=useState("")
+      const {state,dispatch} = useContext(GlobalContext)
 
-    
+    const navigate = useNavigate();
 
     //  const app = initializeApp(firebaseConfig);
      const db = getFirestore();
@@ -40,6 +44,8 @@ const UserLogin = () => {
                 });
                 emptyUserProfile()  
                 console.log("Document written with ID: ", docRef.id);
+                dispatch({type: "USER_LOGIN", payload: {userName, fatherName, batchName, rollNum, trainerName, timingCheck, gmailCheck, phoneNumber}})
+                navigate('/test');
               } catch (e) {
                 console.error("Error adding document: ", e);
               }

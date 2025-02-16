@@ -1,14 +1,20 @@
-import logo from './logo.svg';
 import './App.css';
 import { initializeApp } from "firebase/app";
-// import UserLogin from './pages/UserLogin';
-// import { useState } from 'react';
 import { addDoc, collection, getFirestore } from 'firebase/firestore';
-
 import { Link } from 'react-router';
 import CustomRoutes from './Components/CustomRoutes';
+import { AppBar, Box, Drawer, IconButton, List, ListItem, ListItemIcon, ListItemText, Toolbar, Typography } from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
+import HomeIcon from '@mui/icons-material/Home';
+import PersonIcon from '@mui/icons-material/Person';
+import AddTaskIcon from '@mui/icons-material/AddTask';
+import { useState, useContext } from 'react';
+import { GlobalContext } from './Context/Context';
+
 function App() {
-  
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const {state} = useContext(GlobalContext)
+  console.log("state", state)
   const firebaseConfig = {
     apiKey: "AIzaSyBpzoaV6tPolS69SMsNlPrQNUP-UanS4po",
     authDomain: "quizz-web1.firebaseapp.com",
@@ -18,48 +24,59 @@ function App() {
     appId: "1:27331264374:web:0cbb51b452da0461974457"
   };
   const app = initializeApp(firebaseConfig);
-      const db = getFirestore(app); 
-      
+  const db = getFirestore(app);
+
+  const toggleDrawer = () => {
+    setDrawerOpen(!drawerOpen);
+  };
+
+  const drawerItems = [
+    { text: 'Home', icon: <HomeIcon />, path: '/' },
+    { text: 'Admin Login', icon: <PersonIcon />, path: '/adminLogin' },
+    { text: 'About', icon: <PersonIcon />, path: '/userLogin' },
+    { text: 'Question Add', icon: <AddTaskIcon />, path: '/addQuestion' },
+  ];
+
   return (
-    
     <div className="App">
-      <div>
-        <div className='d-flex  justify-content-between px-3 py-3 bg-primary ' >
-            <div>
-            <h4 className='m-0'> logo</h4>
-                </div>  
-            <ul className='d-flex list-none m-0 gap-2' style={{listStyle: "none"}}>
-                <Link style={{textDecoration: "none", color: "black"}} to={'/adminLogin'}><li>Admin Login</li></Link>
-                <Link style={{textDecoration: "none", color: "black"}} to={'/userLogin'}><li>about</li></Link>
-            </ul>
-        </div>
-                {/* <form onSubmit={addUser} className='mx-auto my-5' style={{display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", gap: "20px", width: "50%" }}>
-                    <div style={{display: "flex", gap: "20px", justifyContent: "space-between" , width: "100%"}}>
-                <TextField id="outlined-basic" type='username' label="Name" variant="outlined" onChange={(e)=>setuserName(e.target.value)} />
-                <TextField id="outlined-basic"  type='username' label="Father's Name" variant="outlined" onChange={(e)=>setFatherName(e.target.value)} />
+      <Box sx={{ flexGrow: 1 }}>
+        <AppBar position="static">
+          <Toolbar>
+            <IconButton
+              size="large"
+              edge="start"
+              color="inherit"
+              aria-label="menu"
+              sx={{ mr: 2 }}
+              onClick={toggleDrawer}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+              Quiz App
 
-                    </div>
-                    <div style={{display: "flex", gap: "20px" , justifyContent: "space-between" , width: "100%"}}>
-                <TextField id="outlined-basic" type='name' label="Batch Name" variant="outlined" onChange={(e)=>setBatchName(e.target.value)} />
-                <TextField id="outlined-basic" type='number' label="Roll Number" variant="outlined" onChange={(e)=>setRollNum(e.target.value)} />
-                    
-                    </div>
-                    <div style={{display: "flex", gap: "20px" , justifyContent: "space-between" , width: "100%"}}>
-                <TextField id="outlined-basic" type='username' label="Trainer Name" variant="outlined" onChange={(e)=>setTrainerName(e.target.value)} />
-                <TextField id="outlined-basic" label="Gmail"  type='gmail' variant="outlined" onChange={(e)=>setGmailCheck(e.target.value)} />
-                    </div>
-                    <div style={{display: "flex", gap: "20px" , justifyContent: "space-between" , width: "100%"}}>
-                <TextField id="outlined-basic" label="Timing" type='sreach'  variant="outlined" onChange={(e)=>setTimingCheck(e.target.value)} />
-                <TextField id="outlined-basic" label="Phone Number" type='number' variant="outlined" onChange={(e)=>setPhoneNumber(e.target.value)} />
-                    </div>
-                    <div style={{display: "flex ", justifyContent:"space-between", width: "100%"}}>
-                    <Button type='submit' variant='contained' style={{background:"gray"}}>CLose</Button>
-                    <Button type='submit' variant='contained' >Submit</Button>
+            </Typography>
+          </Toolbar>
+        </AppBar>
 
-                    </div>
-                </form> */}
-    </div>
-     <CustomRoutes/>
+        <Drawer
+          anchor="left"
+          open={drawerOpen}
+          onClose={toggleDrawer}
+        >
+          <List sx={{ width: 250 }}>
+            {drawerItems.map((item) => (
+              <ListItem button key={item.text} component={Link} to={item.path}>
+                <ListItemIcon>
+                  {item.icon}
+                </ListItemIcon>
+                <ListItemText primary={item.text} />
+              </ListItem>
+            ))}
+          </List>
+        </Drawer>
+      </Box>
+      <CustomRoutes/>
     </div>
   );
 }
